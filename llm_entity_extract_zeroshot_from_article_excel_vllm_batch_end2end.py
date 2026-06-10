@@ -26,7 +26,7 @@ dstfolder_base="/home/m253461/projects/03rdoc/pubmed/rdoc_table_groundtruth"
 model='qwen'   #'gpt', 'gpt_p', 'llama', 'qwen','medgemma'
 engine='gpt-4o' #'gpt-4-1-deployment', 'gpt-4o'
 version='2024-06-01' #'2024-05-01-preview', '2024-06-01'
-batchsize=16
+batchsize=4
 times=10
 now=dt.now()
 if model!='gpt' and model!='gpt_p':
@@ -266,26 +266,45 @@ if __name__=="__main__":
     else:
         dictlist=[]
     #
-    #set instruction
+    #set instruction for entity extraction
     instruction=f"""You are a psychiatric expert focusing on sleep wake disorders. 
-    Sleep wake disorders include  Sleep disorders, Dyssomnias, Insomnia, Hypersomnia, Parasomnia, Sleep fragmentation, Night terrors, Sleep apnea, Hypersomnolence disorders, Excessive daytime sleepiness, Narcolepsy, Sleep-Related Hypoventilation, Nightmare Disorder, Rapid Eye Movement Sleep Behavior Disorder, Restless Legs Syndrome, High-altitude periodic breathing, Periodic limb movement disorder, Sleep-related movement disorders, Disorder of sleep of non-organic origin, Sleep disturbance, Sleep-Wake Disorders, Sleep Deprivation, Nocturnal Paroxysmal Dystonia, Sleep Arousal Disorders, Sleep Bruxism, Sleep-Wake Transition Disorders, Fatal Familial Insomnia, Organic insomnia, Disorders of Excessive Somnolence, Idiopathic Hypersomnia, Kleine-Levin Syndrome, Organic hypersomnia, Sleep Apnea Syndromes, Central Sleep Apnea, Obstructive Sleep Apnea, obstructive Sleep Apnea Hypopnea, Obesity Hypoventilation Syndrome, Organic sleep apnea, Circadian Rhythm Sleep-Wake Disorders, Jet Lag Syndrome, Circadian Rhythm Disorders, Rapid Eye Movement Sleep Behavior Disorder, Rapid Eye Movement Sleep Parasomnias, Non-Rapid Eye Movement Sleep Arousal Disorders, Somnambulism, Sleep Paralysis, Nocturnal Myoclonus Syndrome, Sleep Initiation and Maintenance Disorders, and Cataplexy.
-    Your task is to extract sleep wake disorder-related entities, including three types: cell, gene and molecule, from PubMed articles based on their titles or abstracts. Specifically, 
-    A cell is a fundamental structural and functional unit of life, such as blood platelet, leukocyte, endocrine cell. 
-    A gene is a specific genetic variant, polymorphism, or other genomic feature, such as SLC6A4 (serotonin transporter gene), COMT (catechol-O-methyltransferase gene). 
-    A molecule is the biochemical substance that underlies and helps characterize specific biological or psychological functions, such as neurotransmitters (glutamate, gamma-aminobutyric acid, etc.), neuromodulators (adenosine, nitric oxide, etc.), peptides (neuropeptide S), and other signaling molecules. Please do not include genes in molecules.
+    Background:
+    Sleep-wake disorders include Sleep disorders, Dyssomnias, Insomnia, Hypersomnia, Parasomnia, Sleep fragmentation, Night terrors, Sleep apnea, Hypersomnolence disorders, Excessive daytime sleepiness, Narcolepsy, Sleep-Related Hypoventilation, Nightmare Disorder, Rapid Eye Movement Sleep Behavior Disorder, Restless Legs Syndrome, High-altitude periodic breathing, Periodic limb movement disorder, Sleep-related movement disorders, Disorder of sleep of non-organic origin, Sleep disturbance, Sleep-Wake Disorders, Sleep Deprivation, Nocturnal Paroxysmal Dystonia, Sleep Arousal Disorders, Sleep Bruxism, Sleep-Wake Transition Disorders, Fatal Familial Insomnia, Organic insomnia, Disorders of Excessive Somnolence, Idiopathic Hypersomnia, Kleine-Levin Syndrome, Organic hypersomnia, Sleep Apnea Syndromes, Central Sleep Apnea, Obstructive Sleep Apnea, Obstructive Sleep Apnea Hypopnea, Obesity Hypoventilation Syndrome, Organic sleep apnea, Circadian Rhythm Sleep-Wake Disorders, Jet Lag Syndrome, Circadian Rhythm Disorders, Rapid Eye Movement Sleep Parasomnias, Non-Rapid Eye Movement Sleep Arousal Disorders, Somnambulism, Sleep Paralysis, Nocturnal Myoclonus Syndrome, Sleep Initiation and Maintenance Disorders, and Cataplexy.
 
-    Please follow steps as below:
-    1,Read the title and abstract of each article sentence by sentence.
-    2,Identify sleep wake disorders.
-    3,Identify and write down interested entities (molecule, cell, or gene) that have solid association with sleep wake disorder. Don’t extract disease, tissue, organ, or anything else other than a cell, gene, or molecule.
-    4, If the extracted entity is an adjective, return it along with the noun it modifies, if such a noun exists in the same sentence.
-    5,If the entity is an abbreviation of a single term, identify its full name and write down both.
-	6,If the entity is not an abbreviation, identify its abbreviation and write down both.
-	7,If the entity includes both the full name and its abbreviation, separate them and write down both.
-	8, Find the UMLS concept or term most similar to this full name and write it down.
-    9,Provide source sentences that include the interested entities, sleep wake disorders, and their associations.
-    10,Based on this paper, summarize the associations between the entity and sleep-wake disorders primarily discussed in the study.
-    Finally, output results only in the following Python list-of-dictionaries format, with no explanations, no reasoning, no thinking and no extra text:
+    Before extracting, keep these definitions in mind, entity definitions:
+    Cell: A fundamental structural and functional unit of life (e.g., blood platelet, leukocyte, endocrine cell).
+    Gene: A specific genetic variant, polymorphism, or genomic feature (e.g., SLC6A4, COMT).
+    Molecule: A biochemical substance underlying biological or psychological functions, such as neurotransmitters (glutamate, GABA), neuromodulators (adenosine, nitric oxide), peptides (neuropeptide S), or other signaling molecules. Do not include genes as molecules.
+
+    Task — Think Step by Step:
+    Work through the following reasoning steps explicitly and out loud before producing your final output.
+    Step 1 — Sentence-by-sentence reading:
+    Read the title and abstract one sentence at a time. For each sentence, note what it is discussing (background, method, result, conclusion, etc.) to build context before extracting anything.
+    Step 2 — Identify sleep-wake disorders:
+    From your sentence-by-sentence reading, list every sleep-wake disorder mentioned or implied in the article. Confirm each against the background list above. If a disorder is borderline or loosely related, reason explicitly about whether it qualifies.
+    Step 3 — Identify candidate entities:
+    For each sentence, identify any candidate cells, genes, or molecules. For each candidate, explicitly reason:
+    What type is it — cell, gene, or molecule?
+    Is it a disease, tissue, organ, or something else that should be excluded?
+    Does it have a solid, direct association with a sleep-wake disorder identified in Step 2, or is the association weak/indirect?
+    Only keep entities that pass both checks.
+
+    Step 4 — Handle adjectives:
+    For any extracted entity that is an adjective, check whether it modifies a noun in the same sentence. If so, record the full adjectival phrase (adjective + noun) as the entity name.
+    Step 5 — Resolve abbreviations and full names:
+    For each confirmed entity:
+    If it is an abbreviation only → identify and record the full name alongside it.
+    If it is a full name only → identify and record its common abbreviation alongside it.
+    If both full name and abbreviation appear together in the text → separate them and record both individually.
+
+    Step 6 — Map to UMLS:
+    For each entity's full name, identify the most similar UMLS concept or preferred term and record it.
+    Step 7 — Extract source sentences:
+    For each confirmed entity, quote the exact sentence(s) from the abstract or title that contain the entity, its associated sleep-wake disorder, and the link between them.
+    Step 8 — Summarize the association:
+    Based on the full article context, write a concise summary of the association between each entity and its linked sleep-wake disorder as discussed in this study.
+
+    Output: Finally, output results only in the following Python list-of-dictionaries format, with no explanations, no reasoning, no thinking and no extra text:
     [
         {{
             "pmid": "...",
@@ -300,7 +319,7 @@ if __name__=="__main__":
         }},
         ...
     ]
-    If no valid entities are found, return [].
+    If no valid entities are found, return []
     """
     
     df0=pd.read_csv(srcfilepath)
