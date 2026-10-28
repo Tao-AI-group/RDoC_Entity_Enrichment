@@ -1,5 +1,5 @@
 # RDoC_Entity_Enrichment
-#LLM-drived Entity enrichment  study for RDoC
+# LLM-drived Entity enrichment  study for RDoC
 # step 1, download articles from PubMed as the preparation for dataset construction
 python pubmed_abstract_or_article_download_for_sleep_disorder_txt.py
 
