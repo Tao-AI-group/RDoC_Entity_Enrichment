@@ -9,4 +9,6 @@ python llm_vllm_article_screening_rdoc_gpt.py
 # step 3, entity extraction with llm
 python llm_entity_extract_from_article_excel_vllm_batch_end2end.py
 
-# step 4, entt
+# step 4, entity standardization
+python llm_vllm_rdoc_standardization.py
+
