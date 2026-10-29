@@ -1,7 +1,7 @@
 # This package provides tools for enriching biological entities (cells, genes, and molecules) to support sleep-wake disorder research within the RDoC framework.
-# article title: Large Language Models-Powered Enrichment of the Units of Analysis of the RDoC Framework
+article title: Large Language Models-Powered Enrichment of the Units of Analysis of the RDoC Framework
 
-# This package includes:
+This package includes:
 --prompts and retrieval.md: article retrieval and prompts
 --llm_mayo.py: the library of LLMS 
 --pubmed_abstract_or_article_download_for_sleep_disorder_txt.py: article download from PubMed 
