@@ -31,4 +31,4 @@ python llm_entity_extract_from_article_excel_vllm_batch_end2end.py
 python llm_vllm_rdoc_standardization.py
 
 # note
-# one corpus for this method: pubmed_sleep_disorder_abstract_20240701_20250630_groundtruth_corpus_100.csv
+one corpus for this method: pubmed_sleep_disorder_abstract_20240701_20250630_groundtruth_corpus_100.csv
