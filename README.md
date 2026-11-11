@@ -1,13 +1,13 @@
 ### This package provides tools for enriching biological entities (cells, genes, and molecules) to support sleep-wake disorder research within the RDoC framework.  The whole procedure include four steps: 1) article downloading from PUBMED, 2) Article screening, 3) entity extraction with LLM, and 4) entity standardization with LLMs and fuzziwuzzy.
 article title: Large Language Models-Powered Enrichment of the Units of Analysis of the RDoC Framework
 
-This package includes:
---prompts and retrieval.md: article retrieval and prompts;
---llm_mayo.py: the library of LLMS ;
---pubmed_abstract_or_article_download_for_sleep_disorder_txt.py: article download from PubMed ;
---llm_vllm_article_screening_rdoc_gpt.py: article screening;
---llm_entity_extract_from_article_excel_vllm_batch_end2end.py: entity extraction with LLM;
---llm_vllm_rdoc_standardization.py: entity standardication with UMLS.
+This package includes:<br>
+--prompts and retrieval.md: article retrieval and prompts;<br>
+--llm_mayo.py: the library of LLMS;<br>
+--pubmed_abstract_or_article_download_for_sleep_disorder_txt.py: article download from PubMed;<br>
+--llm_vllm_article_screening_rdoc_gpt.py: article screening;<br>
+--llm_entity_extract_from_article_excel_vllm_batch_end2end.py: entity extraction with LLM;<br>
+--llm_vllm_rdoc_standardization.py: entity standardication with UMLS.<br>
 
 ###Running environments
 --OS: Linux, MacOS, Windows;
