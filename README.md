@@ -9,19 +9,19 @@ This package includes:
 --llm_entity_extract_from_article_excel_vllm_batch_end2end.py: entity extraction with LLM;
 --llm_vllm_rdoc_standardization.py: entity standardication with UMLS.
 
-#Running environments
+###Running environments
 --OS: Linux, MacOS, Windows;
 --platform: Python 3.8-3.12 + torch 2.9;
 --GPU: cuda11.0-cuda13.
 
-#local LLM deployment with sglang
+###local LLM deployment with sglang
 $ pip install sglang==0.5.10.post1
 $ CUDA_VISIBLE_DEVICES=0,1,2,3 python -m sglang.launch_server --model-path /home/m123456/qwen/Qwen3.6-27B --served-model-name qwen3.6-27b --tp-size 4 --host 127.0.0.1 --port 20001 --mem-fraction-static 0.85 --context-length 131072 --reasoning-parser qwen3 --api-key infodev
 
 
 
-# LLM-drived Entity enrichment  study for RDoC
-# step 1, download articles from PubMed as the preparation for dataset construction
+### LLM-drived Entity enrichment  study for RDoC
+### step 1, download articles from PubMed as the preparation for dataset construction
 $ python pubmed_abstract_or_article_download_for_sleep_disorder_txt.py
 key arguments (defaults are given in the code):
   query----a string containing keywords and query rules;
@@ -32,7 +32,7 @@ key arguments (defaults are given in the code):
   date_end----end date of the publication;
   period_days----an integer representing the period of publication which is use to used to cap the maximum retrieval limit.
 
-# step 2, do article screening for data corpus
+### step 2, do article screening for data corpus
 $ python llm_vllm_article_screening_rdoc_gpt.py
 key arguments (defaults are given in the code):
   modelfolder---- the folder of the local LLM used in this code;
@@ -42,7 +42,7 @@ key arguments (defaults are given in the code):
   gpu_num----an integer representing the gpu number;
   batchsize----batch size.
 
-# step 3, entity extraction with llm
+### step 3, entity extraction with llm
 $ python llm_entity_extract_from_article_excel_vllm_batch_end2end.py
 key arguments (defaults are given in the code):
   modelfolder---- the folder of the local LLM used in this code;
@@ -54,7 +54,7 @@ key arguments (defaults are given in the code):
   env_path----local environment path of gpt setting;
   batchsize---- an integer representing the batch size.
 
-# step 4, entity standardization
+### step 4, entity standardization
 $ python llm_vllm_rdoc_standardization.py
 key arguments (defaults are given in the code):
   modelfolder---- the folder of the local LLM used in this code;
@@ -64,5 +64,5 @@ key arguments (defaults are given in the code):
   umlsfilepath----the the full path of UMLS file(a csv file);
   dstfolder_base---- a folder for the output (standardized entities).
 
-# note
+### note
 one corpus for this method: pubmed_sleep_disorder_abstract_20240701_20250630_groundtruth_corpus_100.csv
