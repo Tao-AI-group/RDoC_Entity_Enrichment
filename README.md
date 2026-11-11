@@ -1,4 +1,4 @@
-# This package provides tools for enriching biological entities (cells, genes, and molecules) to support sleep-wake disorder research within the RDoC framework.
+# This package provides tools for enriching biological entities (cells, genes, and molecules) to support sleep-wake disorder research within the RDoC framework.  The whole procedure include four steps: 1) article downloading from PUBMED, 2) Article screening, 3) entity extraction with LLM, and 4) entity standardization with LLMs and fuzziwuzzy.
 article title: Large Language Models-Powered Enrichment of the Units of Analysis of the RDoC Framework
 
 This package includes:
